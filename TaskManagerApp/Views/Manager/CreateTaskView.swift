@@ -22,6 +22,7 @@ struct CreateTaskView: View {
             Form {
                 Section("Görev Bilgileri") {
                     TextField("Başlık", text: $title)
+                        .accessibilityIdentifier("titleField")
                     TextField("Açıklama", text: $description, axis: .vertical)
                         .lineLimit(3...6)
                 }

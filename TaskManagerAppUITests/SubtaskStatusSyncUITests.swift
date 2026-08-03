@@ -8,6 +8,7 @@ final class SubtaskStatusSyncUITests: XCTestCase {
 
     func testSubtaskTogglingAutoUpdatesTaskStatus() throws {
         let app = XCUIApplication()
+        app.launchArguments = ["-uiTestReset"]
         app.launch()
 
         let employeeLoginButton = app.buttons["Demo: Çalışan olarak gir"]

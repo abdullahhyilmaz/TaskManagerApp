@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7DE01BAFCD520D28856CD44F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD988AFC7508EEE6B291495E /* Foundation.framework */; };
 		BECA2E0F298AE1524211B5D2 /* SubtaskStatusSyncUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29CFDFFBA7BA5620314B02D /* SubtaskStatusSyncUITests.swift */; };
+		F6A0D5DAB053A6937AFF689F /* ManagerCreateTaskUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B66AE930F88B89058C59765 /* ManagerCreateTaskUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		32759970F8AD37DA6CA15CC6 /* TaskManagerAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TaskManagerAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B66AE930F88B89058C59765 /* ManagerCreateTaskUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ManagerCreateTaskUITests.swift; sourceTree = "<group>"; };
 		BD988AFC7508EEE6B291495E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		D29CFDFFBA7BA5620314B02D /* SubtaskStatusSyncUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SubtaskStatusSyncUITests.swift; path = SubtaskStatusSyncUITests.swift; sourceTree = "<group>"; };
 		D452A6B925684FAEA84DF8AB /* TaskManagerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TaskManagerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -92,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				D29CFDFFBA7BA5620314B02D /* SubtaskStatusSyncUITests.swift */,
+				8B66AE930F88B89058C59765 /* ManagerCreateTaskUITests.swift */,
 			);
 			name = TaskManagerAppUITests;
 			path = TaskManagerAppUITests;
@@ -210,6 +213,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BECA2E0F298AE1524211B5D2 /* SubtaskStatusSyncUITests.swift in Sources */,
+				F6A0D5DAB053A6937AFF689F /* ManagerCreateTaskUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -61,6 +61,8 @@ struct ManagerBoardView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
+                    .accessibilityLabel("Yeni Görev Oluştur")
+                    .accessibilityIdentifier("createTaskButton")
                     Button("Çıkış", action: onLogout)
                         .font(.subheadline)
                 }

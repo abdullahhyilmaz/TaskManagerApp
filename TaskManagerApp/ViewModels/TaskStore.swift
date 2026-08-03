@@ -6,6 +6,9 @@ final class TaskStore {
     var tasks: [TaskItem]
 
     init(tasks: [TaskItem]? = nil) {
+        if ProcessInfo.processInfo.arguments.contains("-uiTestReset") {
+            try? FileManager.default.removeItem(at: Self.fileURL)
+        }
         self.tasks = tasks ?? Self.load() ?? MockData.tasks
     }
 
