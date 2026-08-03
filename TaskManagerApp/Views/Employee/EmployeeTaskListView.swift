@@ -36,9 +36,9 @@ struct EmployeeTaskListView: View {
                                 Section {
                                     ForEach(sectionTasks) { task in
                                         NavigationLink {
-                                            TaskDetailView(taskID: task.id, isManager: false)
+                                            TaskDetailView(taskID: task.id, isManager: false, currentUser: currentUser)
                                         } label: {
-                                            TaskCardView(task: task)
+                                            TaskCardView(task: task, assigneeFilter: currentUser)
                                                 .padding(.vertical, 4)
                                         }
                                         .listRowSeparator(.hidden)

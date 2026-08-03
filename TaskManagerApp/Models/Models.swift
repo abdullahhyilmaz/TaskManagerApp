@@ -40,11 +40,13 @@ enum TaskStatus: String, CaseIterable, Identifiable, Codable {
 struct Subtask: Identifiable, Hashable, Codable {
     let id: UUID
     var title: String
+    var assignee: AppUser
     var isDone: Bool
 
-    init(id: UUID = UUID(), title: String, isDone: Bool = false) {
+    init(id: UUID = UUID(), title: String, assignee: AppUser, isDone: Bool = false) {
         self.id = id
         self.title = title
+        self.assignee = assignee
         self.isDone = isDone
     }
 }
@@ -53,7 +55,8 @@ struct TaskItem: Identifiable, Hashable, Codable {
     let id: UUID
     var title: String
     var description: String
-    var assignee: AppUser
+    /// Görevi oluşturan/takip eden yönetici. Alt görevler kendi assignee'lerine sahiptir, bu alan çalışan görünürlüğünde kullanılmaz.
+    var owner: AppUser
     var status: TaskStatus
     var dueDate: Date?
     var subtasks: [Subtask]
@@ -62,7 +65,7 @@ struct TaskItem: Identifiable, Hashable, Codable {
         id: UUID = UUID(),
         title: String,
         description: String,
-        assignee: AppUser,
+        owner: AppUser,
         status: TaskStatus,
         dueDate: Date? = nil,
         subtasks: [Subtask] = []
@@ -70,7 +73,7 @@ struct TaskItem: Identifiable, Hashable, Codable {
         self.id = id
         self.title = title
         self.description = description
-        self.assignee = assignee
+        self.owner = owner
         self.status = status
         self.dueDate = dueDate
         self.subtasks = subtasks

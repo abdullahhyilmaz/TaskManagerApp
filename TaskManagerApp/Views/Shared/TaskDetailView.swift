@@ -4,19 +4,26 @@ struct TaskDetailView: View {
     @Environment(TaskStore.self) private var store
     let taskID: TaskItem.ID
     let isManager: Bool
+    let currentUser: AppUser
     var onDelete: (() -> Void)?
 
     @Environment(\.dismiss) private var dismiss
     @State private var showDeleteConfirmation = false
 
-    init(taskID: TaskItem.ID, isManager: Bool, onDelete: (() -> Void)? = nil) {
+    init(taskID: TaskItem.ID, isManager: Bool, currentUser: AppUser, onDelete: (() -> Void)? = nil) {
         self.taskID = taskID
         self.isManager = isManager
+        self.currentUser = currentUser
         self.onDelete = onDelete
     }
 
     private var task: TaskItem? {
         store.task(withID: taskID)
+    }
+
+    /// Yönetici tüm alt görevleri görür; çalışan sadece kendisine atanmış olanları görür.
+    private func visibleSubtasks(for task: TaskItem) -> [Subtask] {
+        isManager ? task.subtasks : task.subtasks.filter { $0.assignee.id == currentUser.id }
     }
 
     var body: some View {
@@ -35,7 +42,7 @@ struct TaskDetailView: View {
                     Text(task.title)
                         .font(.title2.bold())
 
-                    Label(task.assignee.name, systemImage: "person.crop.circle")
+                    Label(task.owner.name, systemImage: "person.crop.circle")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
 
@@ -69,22 +76,25 @@ struct TaskDetailView: View {
                     .accessibilityIdentifier("statusPicker")
                 }
 
-                if !task.subtasks.isEmpty {
+                let mySubtasks = visibleSubtasks(for: task)
+                if !mySubtasks.isEmpty {
+                    let completedCount = mySubtasks.filter(\.isDone).count
+                    let progress = Double(completedCount) / Double(mySubtasks.count)
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Text("Alt Görevler")
                                 .font(.headline)
                             Spacer()
-                            Text("\(task.completedSubtaskCount)/\(task.subtasks.count)")
+                            Text("\(completedCount)/\(mySubtasks.count)")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
-                        ProgressView(value: task.subtaskProgress)
+                        ProgressView(value: progress)
                             .tint(.blue)
-                            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: task.subtaskProgress)
+                            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: progress)
 
                         VStack(spacing: 0) {
-                            ForEach(task.subtasks) { subtask in
+                            ForEach(mySubtasks) { subtask in
                                 Button {
                                     withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                                         store.toggleSubtask(taskID: task.id, subtaskID: subtask.id)
@@ -100,12 +110,17 @@ struct TaskDetailView: View {
                                             .foregroundStyle(.primary)
                                             .strikethrough(subtask.isDone)
                                         Spacer()
+                                        if isManager {
+                                            Text(subtask.assignee.name)
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
                                     }
                                     .padding(.vertical, 10)
                                 }
                                 .buttonStyle(.plain)
 
-                                if subtask.id != task.subtasks.last?.id {
+                                if subtask.id != mySubtasks.last?.id {
                                     Divider()
                                 }
                             }
@@ -152,14 +167,14 @@ struct TaskDetailView: View {
 
 #Preview("Yönetici - Alt görevli") {
     NavigationStack {
-        TaskDetailView(taskID: MockData.tasks[2].id, isManager: true)
+        TaskDetailView(taskID: MockData.tasks[2].id, isManager: true, currentUser: MockData.manager)
     }
     .environment(TaskStore())
 }
 
-#Preview("Çalışan - Alt görevsiz") {
+#Preview("Çalışan - Kendi alt görevleri") {
     NavigationStack {
-        TaskDetailView(taskID: MockData.tasks[1].id, isManager: false)
+        TaskDetailView(taskID: MockData.tasks[0].id, isManager: false, currentUser: MockData.employees[0])
     }
     .environment(TaskStore())
 }

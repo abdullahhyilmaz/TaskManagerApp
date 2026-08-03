@@ -13,7 +13,11 @@ final class TaskStore {
     }
 
     func tasks(assignedTo user: AppUser) -> [TaskItem] {
-        tasks.filter { $0.assignee.id == user.id }
+        tasks.filter { $0.subtasks.contains { $0.assignee.id == user.id } }
+    }
+
+    func subtasks(in task: TaskItem, assignedTo user: AppUser) -> [Subtask] {
+        task.subtasks.filter { $0.assignee.id == user.id }
     }
 
     func task(withID id: TaskItem.ID) -> TaskItem? {

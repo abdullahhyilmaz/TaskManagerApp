@@ -3,13 +3,15 @@ import SwiftUI
 struct CreateTaskView: View {
     @Environment(\.dismiss) private var dismiss
 
+    let currentUser: AppUser
+
     @State private var title: String = ""
     @State private var description: String = ""
-    @State private var selectedAssignee: AppUser = MockData.employees[0]
     @State private var hasDueDate: Bool = false
     @State private var dueDate: Date = Calendar.current.date(byAdding: .day, value: 3, to: Date()) ?? Date()
     @State private var subtasks: [Subtask] = []
     @State private var newSubtaskTitle: String = ""
+    @State private var newSubtaskAssignee: AppUser = MockData.employees[0]
 
     var onCreate: (TaskItem) -> Void
 
@@ -27,14 +29,6 @@ struct CreateTaskView: View {
                         .lineLimit(3...6)
                 }
 
-                Section("Atanan Kişi") {
-                    Picker("Çalışan", selection: $selectedAssignee) {
-                        ForEach(MockData.employees) { employee in
-                            Text(employee.name).tag(employee)
-                        }
-                    }
-                }
-
                 Section("Son Tarih") {
                     Toggle("Son tarih belirle", isOn: $hasDueDate.animation())
                     if hasDueDate {
@@ -44,7 +38,13 @@ struct CreateTaskView: View {
 
                 Section("Alt Görevler") {
                     ForEach(subtasks) { subtask in
-                        Text(subtask.title)
+                        HStack {
+                            Text(subtask.title)
+                            Spacer()
+                            Text(subtask.assignee.name)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                     .onDelete { indexSet in
                         subtasks.remove(atOffsets: indexSet)
@@ -52,11 +52,25 @@ struct CreateTaskView: View {
 
                     HStack {
                         TextField("Yeni alt görev", text: $newSubtaskTitle)
+                            .accessibilityIdentifier("newSubtaskTitleField")
+
+                        Menu {
+                            ForEach(MockData.employees) { employee in
+                                Button(employee.name) { newSubtaskAssignee = employee }
+                            }
+                        } label: {
+                            Label(newSubtaskAssignee.name, systemImage: "person.crop.circle")
+                                .font(.caption)
+                                .lineLimit(1)
+                        }
+                        .accessibilityIdentifier("newSubtaskAssigneeMenu")
+
                         Button {
                             addSubtask()
                         } label: {
                             Image(systemName: "plus.circle.fill")
                         }
+                        .accessibilityIdentifier("addSubtaskButton")
                         .disabled(newSubtaskTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     }
                 }
@@ -80,7 +94,7 @@ struct CreateTaskView: View {
     private func addSubtask() {
         let trimmed = newSubtaskTitle.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        subtasks.append(Subtask(title: trimmed))
+        subtasks.append(Subtask(title: trimmed, assignee: newSubtaskAssignee))
         newSubtaskTitle = ""
     }
 
@@ -88,7 +102,7 @@ struct CreateTaskView: View {
         let task = TaskItem(
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
             description: description.trimmingCharacters(in: .whitespacesAndNewlines),
-            assignee: selectedAssignee,
+            owner: currentUser,
             status: .todo,
             dueDate: hasDueDate ? dueDate : nil,
             subtasks: subtasks
@@ -99,5 +113,5 @@ struct CreateTaskView: View {
 }
 
 #Preview {
-    CreateTaskView { _ in }
+    CreateTaskView(currentUser: MockData.manager) { _ in }
 }

@@ -2,6 +2,22 @@ import SwiftUI
 
 struct TaskCardView: View {
     let task: TaskItem
+    /// Belirtilirse ilerleme sadece bu kişiye atanan alt görevlere göre hesaplanır (çalışan görünümü); nil ise tüm alt görevler baz alınır (yönetici görünümü).
+    var assigneeFilter: AppUser? = nil
+
+    private var relevantSubtasks: [Subtask] {
+        guard let assigneeFilter else { return task.subtasks }
+        return task.subtasks.filter { $0.assignee.id == assigneeFilter.id }
+    }
+
+    private var completedCount: Int {
+        relevantSubtasks.filter(\.isDone).count
+    }
+
+    private var progress: Double {
+        guard !relevantSubtasks.isEmpty else { return 0 }
+        return Double(completedCount) / Double(relevantSubtasks.count)
+    }
 
     private var dueDateColor: Color {
         guard let dueDate = task.dueDate else { return .secondary }
@@ -15,21 +31,21 @@ struct TaskCardView: View {
                 .foregroundStyle(.primary)
                 .lineLimit(2)
 
-            Label(task.assignee.name, systemImage: "person.crop.circle")
+            Label(task.owner.name, systemImage: "person.crop.circle")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-            if !task.subtasks.isEmpty {
+            if !relevantSubtasks.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
-                        Text("\(task.completedSubtaskCount)/\(task.subtasks.count) alt görev")
+                        Text("\(completedCount)/\(relevantSubtasks.count) alt görev")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                         Spacer()
                     }
-                    ProgressView(value: task.subtaskProgress)
+                    ProgressView(value: progress)
                         .tint(.blue)
-                        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: task.subtaskProgress)
+                        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: progress)
                 }
             }
 

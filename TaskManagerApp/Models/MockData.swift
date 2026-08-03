@@ -20,70 +20,70 @@ enum MockData {
         TaskItem(
             title: "Yeni müşteri onboarding akışı",
             description: "Yeni müşteriler için uygulama içi tanıtım ve hesap kurulum akışını tasarla ve uygula.",
-            assignee: employees[0],
+            owner: manager,
             status: .todo,
             dueDate: daysFromNow(5),
             subtasks: [
-                Subtask(title: "Kullanıcı akış şeması"),
-                Subtask(title: "Wireframe tasarımı"),
-                Subtask(title: "Geliştirici ile teknik inceleme")
+                Subtask(title: "Kullanıcı akış şeması", assignee: employees[0]),
+                Subtask(title: "Wireframe tasarımı", assignee: employees[0]),
+                Subtask(title: "Geliştirici ile teknik inceleme", assignee: employees[0])
             ]
         ),
         TaskItem(
             title: "API dokümantasyonunu güncelle",
             description: "Yeni eklenen endpoint'ler için dokümantasyon yazılacak.",
-            assignee: employees[1],
+            owner: manager,
             status: .todo,
             dueDate: nil,
-            subtasks: []
+            subtasks: [
+                Subtask(title: "Endpoint listesini çıkar", assignee: employees[1])
+            ]
         ),
         TaskItem(
             title: "Aylık satış raporu",
             description: "Temmuz ayı satış verilerini derleyip yönetim kuruluna sun.",
-            assignee: employees[2],
+            owner: manager,
             status: .inProgress,
             dueDate: daysFromNow(2),
             subtasks: [
-                Subtask(title: "Ham veriyi topla", isDone: true),
-                Subtask(title: "Grafik ve tabloları hazırla", isDone: true),
-                Subtask(title: "Sunum dosyasını oluştur"),
-                Subtask(title: "Yöneticiyle gözden geçir"),
-                Subtask(title: "PDF olarak paylaş")
+                Subtask(title: "Ham veriyi topla", assignee: employees[2], isDone: true),
+                Subtask(title: "Grafik ve tabloları hazırla", assignee: employees[2], isDone: true),
+                Subtask(title: "Sunum dosyasını oluştur", assignee: employees[0]),
+                Subtask(title: "Yöneticiyle gözden geçir", assignee: employees[2]),
+                Subtask(title: "PDF olarak paylaş", assignee: employees[2])
             ]
         ),
         TaskItem(
             title: "Ofis ağı bakım çalışması",
             description: "Kat 3 ofis ağındaki yavaşlık sorununu tespit et ve gider.",
-            assignee: employees[3],
+            owner: manager,
             status: .inProgress,
             dueDate: daysFromNow(1),
             subtasks: [
-                Subtask(title: "Ağ trafiğini izle", isDone: true),
-                Subtask(title: "Sorunlu switch'i değiştir")
+                Subtask(title: "Ağ trafiğini izle", assignee: employees[3], isDone: true),
+                Subtask(title: "Sorunlu switch'i değiştir", assignee: employees[3])
             ]
         ),
         TaskItem(
             title: "Yeni çalışan oryantasyon eğitimi",
             description: "İşe yeni başlayan ekip üyeleri için oryantasyon materyallerini hazırla.",
-            assignee: employees[0],
+            owner: manager,
             status: .done,
             dueDate: daysFromNow(-3),
             subtasks: [
-                Subtask(title: "Sunum hazırlığı", isDone: true),
-                Subtask(title: "Eğitim videosu çek", isDone: true)
+                Subtask(title: "Sunum hazırlığı", assignee: employees[0], isDone: true),
+                Subtask(title: "Eğitim videosu çek", assignee: employees[0], isDone: true)
             ]
         ),
         TaskItem(
             title: "Web sitesi performans optimizasyonu",
             description: "Ana sayfa yüklenme süresini iyileştir.",
-            assignee: employees[1],
+            owner: manager,
             status: .done,
             dueDate: daysFromNow(-1),
-            subtasks: []
+            subtasks: [
+                Subtask(title: "Görsel boyutlarını küçült", assignee: employees[1], isDone: true)
+            ]
         )
     ]
-
-    static func tasks(for user: AppUser) -> [TaskItem] {
-        tasks.filter { $0.assignee.id == user.id }
-    }
 }

@@ -29,6 +29,7 @@ struct ManagerBoardView: View {
                                         status: status,
                                         tasks: tasks(for: status),
                                         isManager: true,
+                                        currentUser: currentUser,
                                         onDelete: store.delete
                                     )
                                     .id(status)
@@ -68,7 +69,7 @@ struct ManagerBoardView: View {
                 }
             }
             .sheet(isPresented: $showCreateTask) {
-                CreateTaskView { newTask in
+                CreateTaskView(currentUser: currentUser) { newTask in
                     store.add(newTask)
                 }
             }
@@ -97,6 +98,7 @@ private struct BoardColumnView: View {
     let status: TaskStatus
     let tasks: [TaskItem]
     let isManager: Bool
+    let currentUser: AppUser
     var onDelete: (TaskItem) -> Void
 
     var body: some View {
@@ -123,7 +125,7 @@ private struct BoardColumnView: View {
                 VStack(spacing: 10) {
                     ForEach(tasks) { task in
                         NavigationLink {
-                            TaskDetailView(taskID: task.id, isManager: isManager) {
+                            TaskDetailView(taskID: task.id, isManager: isManager, currentUser: currentUser) {
                                 onDelete(task)
                             }
                         } label: {
