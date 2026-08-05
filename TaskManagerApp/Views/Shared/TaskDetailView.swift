@@ -42,7 +42,7 @@ struct TaskDetailView: View {
                     Text(task.title)
                         .font(.title2.bold())
 
-                    Label(task.owner.name, systemImage: "person.crop.circle")
+                    Label("İşveren: \(task.owner.name)", systemImage: "person.crop.circle")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
 

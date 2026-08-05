@@ -31,7 +31,7 @@ struct TaskCardView: View {
                 .foregroundStyle(.primary)
                 .lineLimit(2)
 
-            Label(task.owner.name, systemImage: "person.crop.circle")
+            Label("İşveren: \(task.owner.name)", systemImage: "person.crop.circle")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
