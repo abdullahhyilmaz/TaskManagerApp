@@ -5,6 +5,8 @@ struct EmployeeTaskListView: View {
     @Environment(TaskStore.self) private var store
     var onLogout: () -> Void
 
+    @State private var statusError: String?
+
     private var tasks: [TaskItem] {
         store.tasks(assignedTo: currentUser)
     }
@@ -46,7 +48,11 @@ struct EmployeeTaskListView: View {
                                             if let next = nextStatus(after: task.status) {
                                                 Button {
                                                     withAnimation {
-                                                        store.setStatus(taskID: task.id, status: next)
+                                                        do {
+                                                            try store.setStatus(taskID: task.id, status: next)
+                                                        } catch {
+                                                            statusError = error.localizedDescription
+                                                        }
                                                     }
                                                 } label: {
                                                     Label(next.rawValue, systemImage: next.symbolName)
@@ -58,7 +64,11 @@ struct EmployeeTaskListView: View {
                                             if task.status != .done {
                                                 Button {
                                                     withAnimation {
-                                                        store.setStatus(taskID: task.id, status: .done)
+                                                        do {
+                                                            try store.setStatus(taskID: task.id, status: .done)
+                                                        } catch {
+                                                            statusError = error.localizedDescription
+                                                        }
                                                     }
                                                 } label: {
                                                     Label("Tamamlandı", systemImage: "checkmark.circle.fill")
@@ -91,6 +101,17 @@ struct EmployeeTaskListView: View {
                     Button("Çıkış", action: onLogout)
                         .font(.subheadline)
                 }
+            }
+            .alert(
+                "İşlem Tamamlanamadı",
+                isPresented: Binding(
+                    get: { statusError != nil },
+                    set: { if !$0 { statusError = nil } }
+                )
+            ) {
+                Button("Tamam", role: .cancel) {}
+            } message: {
+                Text(statusError ?? "")
             }
         }
     }

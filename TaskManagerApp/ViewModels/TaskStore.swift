@@ -1,6 +1,14 @@
 import Foundation
 import Observation
 
+enum TaskStoreError: LocalizedError {
+    case incompleteSubtasks
+
+    var errorDescription: String? {
+        "Tüm alt görevler tamamlanmadan bu görev \"Tamamlandı\" olarak işaretlenemez."
+    }
+}
+
 @Observable
 final class TaskStore {
     var tasks: [TaskItem]
@@ -34,8 +42,11 @@ final class TaskStore {
         save()
     }
 
-    func setStatus(taskID: TaskItem.ID, status: TaskStatus) {
+    func setStatus(taskID: TaskItem.ID, status: TaskStatus) throws {
         guard let index = tasks.firstIndex(where: { $0.id == taskID }) else { return }
+        if status == .done, tasks[index].completedSubtaskCount != tasks[index].subtasks.count {
+            throw TaskStoreError.incompleteSubtasks
+        }
         tasks[index].status = status
         save()
     }

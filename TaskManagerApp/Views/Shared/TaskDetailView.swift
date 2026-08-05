@@ -9,6 +9,7 @@ struct TaskDetailView: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var showDeleteConfirmation = false
+    @State private var statusError: String?
 
     init(taskID: TaskItem.ID, isManager: Bool, currentUser: AppUser, onDelete: (() -> Void)? = nil) {
         self.taskID = taskID
@@ -66,7 +67,13 @@ struct TaskDetailView: View {
                         .font(.headline)
                     Picker("Durum", selection: Binding(
                         get: { task.status },
-                        set: { store.setStatus(taskID: task.id, status: $0) }
+                        set: { newStatus in
+                            do {
+                                try store.setStatus(taskID: task.id, status: newStatus)
+                            } catch {
+                                statusError = error.localizedDescription
+                            }
+                        }
                     )) {
                         ForEach(TaskStatus.allCases) { status in
                             Text(status.rawValue).tag(status)
@@ -161,6 +168,17 @@ struct TaskDetailView: View {
                 dismiss()
             }
             Button("Vazgeç", role: .cancel) {}
+        }
+        .alert(
+            "İşlem Tamamlanamadı",
+            isPresented: Binding(
+                get: { statusError != nil },
+                set: { if !$0 { statusError = nil } }
+            )
+        ) {
+            Button("Tamam", role: .cancel) {}
+        } message: {
+            Text(statusError ?? "")
         }
     }
 }
