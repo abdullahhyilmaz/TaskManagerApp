@@ -1,13 +1,38 @@
 import Foundation
 
 enum MockData {
-    static let manager = AppUser(name: "Elif Kaya", email: "elif.kaya@sirket.com", role: .manager)
+    static let manager = AppUser(
+        id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
+        name: "Elif Kaya",
+        email: "elif.kaya@sirket.com",
+        role: .manager
+    )
 
     static let employees: [AppUser] = [
-        AppUser(name: "Ahmet Yıldız", email: "ahmet.yildiz@sirket.com", role: .employee),
-        AppUser(name: "Zeynep Demir", email: "zeynep.demir@sirket.com", role: .employee),
-        AppUser(name: "Mert Şahin", email: "mert.sahin@sirket.com", role: .employee),
-        AppUser(name: "Buse Arslan", email: "buse.arslan@sirket.com", role: .employee)
+        AppUser(
+            id: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!,
+            name: "Ahmet Yıldız",
+            email: "ahmet.yildiz@sirket.com",
+            role: .employee
+        ),
+        AppUser(
+            id: UUID(uuidString: "00000000-0000-0000-0000-000000000003")!,
+            name: "Zeynep Demir",
+            email: "zeynep.demir@sirket.com",
+            role: .employee
+        ),
+        AppUser(
+            id: UUID(uuidString: "00000000-0000-0000-0000-000000000004")!,
+            name: "Mert Şahin",
+            email: "mert.sahin@sirket.com",
+            role: .employee
+        ),
+        AppUser(
+            id: UUID(uuidString: "00000000-0000-0000-0000-000000000005")!,
+            name: "Buse Arslan",
+            email: "buse.arslan@sirket.com",
+            role: .employee
+        )
     ]
 
     static let currentEmployee = employees[0]
