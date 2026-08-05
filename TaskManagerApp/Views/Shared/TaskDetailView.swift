@@ -27,6 +27,26 @@ struct TaskDetailView: View {
         isManager ? task.subtasks : task.subtasks.filter { $0.assignee.id == currentUser.id }
     }
 
+    @ViewBuilder
+    private func subtaskRow(_ subtask: Subtask) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: subtask.isDone ? "checkmark.circle.fill" : "circle")
+                .foregroundStyle(subtask.isDone ? .blue : .secondary)
+                .font(.title3)
+                .contentTransition(.symbolEffect(.replace))
+                .accessibilityHidden(true)
+            Text(subtask.title)
+                .foregroundStyle(.primary)
+                .strikethrough(subtask.isDone)
+            Spacer()
+            if isManager {
+                Text(subtask.assignee.name)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
     var body: some View {
         if let task {
             content(for: task)
@@ -102,30 +122,20 @@ struct TaskDetailView: View {
 
                         VStack(spacing: 0) {
                             ForEach(mySubtasks) { subtask in
-                                Button {
-                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                        store.toggleSubtask(taskID: task.id, subtaskID: subtask.id)
-                                    }
-                                } label: {
-                                    HStack(spacing: 12) {
-                                        Image(systemName: subtask.isDone ? "checkmark.circle.fill" : "circle")
-                                            .foregroundStyle(subtask.isDone ? .blue : .secondary)
-                                            .font(.title3)
-                                            .contentTransition(.symbolEffect(.replace))
-                                            .accessibilityHidden(true)
-                                        Text(subtask.title)
-                                            .foregroundStyle(.primary)
-                                            .strikethrough(subtask.isDone)
-                                        Spacer()
-                                        if isManager {
-                                            Text(subtask.assignee.name)
-                                                .font(.caption)
-                                                .foregroundStyle(.secondary)
+                                if isManager {
+                                    subtaskRow(subtask)
+                                        .padding(.vertical, 10)
+                                } else {
+                                    Button {
+                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                            store.toggleSubtask(taskID: task.id, subtaskID: subtask.id)
                                         }
+                                    } label: {
+                                        subtaskRow(subtask)
+                                            .padding(.vertical, 10)
                                     }
-                                    .padding(.vertical, 10)
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
 
                                 if subtask.id != mySubtasks.last?.id {
                                     Divider()
